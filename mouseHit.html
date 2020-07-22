@@ -1,0 +1,182 @@
+<html>
+    <head>
+        <style type="text/css">
+            #content{
+                width:960px;
+                margin:0 auto;
+                text-align:center;
+            }
+            table{margin:0 auto;}
+            /*table:hover{cursor:url('images/hammer.jpg'),auto;}*/
+            td{
+                width:95px;
+                height:95px;
+                background-color:#00ff33;
+            }
+        </style>
+        <script>
+            var td = new Array(),//保存每个格子的地鼠
+            playing = false,//游戏是否开始
+            score = 0,//分数
+            beat = 0,//鼠标单击次数
+            success = 0,//命中率
+            knock = 0, //鼠标击中老鼠图片次数
+            countDown = 30,//倒计时
+            interId = null,//指定setInterval()的变量
+            timeId = null;//指定setTimeout()的变量
+
+            function GameOver(){
+            /*
+            游戏结束时调用该函数,并显示得分和命中率
+            同时重置success,score,knock的值
+            */
+            timeStop();
+            playing = false;
+            clearMouse();
+            alert("游戏结束 \n你获得分数为："+score+"\n命中率为: "+success);
+            success = 0;  
+            score = 0;  
+            knock = 0; 
+            beat = 0;
+            countDown = 30;
+            }
+
+
+
+            function timeShow(){
+                /*
+                显示当前倒计时所剩时间
+                如果剩余时间为0，游戏结束
+                否则countDown-1 并指定timeId的值
+                
+                */
+                document.form1.remtime.value= countDown; //设置倒计时表单中remtime的显示数字
+                if(countDown==0){
+                    GameOver();
+                    return;
+                }else{
+                    countDown -= 1;
+                    timeId = setTimeout("timeShow()",1000);  //setTimeOut在延迟一秒之后调用timeShow()函数
+                }
+            }
+
+            function timeStop(){
+                /*
+                停止所有记时
+                */
+                clearInterval(interId);  
+                clearTimeout(timeId);
+
+            }
+
+            function show(){
+                /*随机循环显示老鼠图片
+                
+                */
+                if(playing){
+                    var current = Math.floor(Math.random()*25);  // 随机产生一个0-24的整数
+                    document.getElementById("td["+current+"]").innerHTML='<img src="images/mouse.jpg">';//"td["是个字符串
+                    //setTimeout 3秒后隐藏老鼠图片
+                setTimeout("document.getElementById('td["+current+"]').innerHTML=''",3000); 
+                }
+            }
+
+            function clearMouse(){
+                /*清除所有图片*/
+                for(var i=0;i<24;i++){
+                    document.getElementById("td["+i+"]").innerHTML = "";
+                }
+            }
+
+            function hit(id){
+                /*判断玩家是否击中地鼠*/
+                if(playing==false){
+                    alert("单击开始");
+                    return;
+                }else{
+                    beat += 1; //如果游戏已经开始，把鼠标单击次数+1
+                    if(document.getElementById("td["+id+"]").innerHTML !=""){ //通过id判断玩家是否击中地鼠
+                        score += 1; //得分+1
+                        knock += 1;//击中地鼠的次数+1
+                        success = Math.round(((knock/beat)*100)) + "%";//计算命中率
+                        document.form1.score.value = score;  //更新得分提示表单数字
+                        document.form1.success.value = success; //更新命中率表单数字
+                        document.getElementById("td["+id+"]").innerHTML = ""; //消除被击中的老鼠图片
+                    }else{  //如果没击中
+                        score -= 1;
+                        success = Math.round(((knock/beat)*100)) + "%";
+                        document.form1.score.value = score;
+                        document.form1.success.value = success;
+                    }
+                }
+            }
+
+            function GameStart(){
+
+                /*主函数*/
+                playing = true; //指定 playing的值
+                interId = setInterval("show()",1000); //指定interId的值 随机循环显示老鼠图片
+                document.form1.success.value = success;
+                document.form1.score.value = score;
+                timeShow();
+               
+            }
+
+
+
+
+        </script>
+    </head>
+    <body>
+        <div id="content">
+            <input type="button" value="开始游戏" onclick="GameStart()">
+            <input type="button" value="结束游戏" onclick="GameOver()">
+            <form name="form1">
+                <label>分数：</label>
+                <input type="text" name="score" size="5">
+                <lable>命中率:</lable>
+                <input type="text" name="success" size="10">
+                <label>倒计时:</label>
+                <input type="tetx" name="remtime" size="5">
+            </form>
+            <table>
+                <tr>
+                    <td id="td[0]" onclick="hit(0)"></td>
+                    <td id="td[1]" onclick="hit(1)"></td>
+                    <td id="td[2]" onclick="hit(2)"></td>
+                    <td id="td[3]" onclick="hit(3)"></td>
+                    <td id="td[4]" onclick="hit(4)"></td>
+                </tr>
+                <tr>
+                    <td id="td[5]" onclick="hit(5)"></td>
+                    <td id="td[6]" onclick="hit(6)"></td>
+                    <td id="td[7]" onclick="hit(7)"></td>
+                    <td id="td[8]" onclick="hit(8)"></td>
+                    <td id="td[9]" onclick="hit(9)"></td>
+                </tr>
+                <tr>
+                    <td id="td[10]" onclick="hit(10)"></td>
+                    <td id="td[11]" onclick="hit(11)"></td>
+                    <td id="td[12]" onclick="hit(12)"></td>
+                    <td id="td[13]" onclick="hit(13)"></td>
+                    <td id="td[14]" onclick="hit(14)"></td>
+                </tr>
+                <tr>
+                    <td id="td[15]" onclick="hit(15)"></td> 
+                    <td id="td[16]" onclick="hit(16)"></td>
+                    <td id="td[17]" onclick="hit(17)"></td>
+                    <td id="td[18]" onclick="hit(18)"></td>
+                    <td id="td[19]" onclick="hit(19)"></td>
+                </tr>
+                <tr>
+                    <td id="td[20]" onclick="hit(20)"></td> 
+                    <td id="td[21]" onclick="hit(21)"></td>
+                    <td id="td[22]" onclick="hit(22)"></td>
+                    <td id="td[23]" onclick="hit(23)"></td>
+                    <td id="td[24]" onclick="hit(24)"></td>
+                </tr>
+            </table>
+        </div>
+        
+    </body>
+</html>
